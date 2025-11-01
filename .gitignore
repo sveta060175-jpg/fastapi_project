@@ -1,0 +1,28 @@
+
+# Byte-compiled / optimized / DLL files
+pycache/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+venv/
+.env
+.env.*
+
+# Database
+*.db
+*.sqlite3
+
+# VSCode / PyCharm
+.vscode/
+.idea/
+
+# Migrations
+alembic/
+
+# Logs
+*.log
+
+# Python cache
+*.pyc
+pycache/
