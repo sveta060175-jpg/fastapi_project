@@ -2,7 +2,7 @@ from sqlmodel import create_engine,Session
 from contextlib import contextmanager
 import os
 
-DATABASEURL=os.getenv("DATABASEURL","sqllite:///./dev.db")
+DATABASEURL=os.getenv("DATABASEURL","sqllite:///dev.db")
 engine=create_engine(DATABASEURL,echo=False)
 def init_db():
     from app.models.models import SQLModel
@@ -11,4 +11,4 @@ def init_db():
 @contextmanager
 def get_session():
     with Session(engine) as session:
-        yield session 
+        yield session
