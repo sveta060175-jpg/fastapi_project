@@ -3,13 +3,16 @@ import os
 from passlib.context import CryptContext
 from typing import Optional
 from jose import JWTError,jwt
-from models.models import User
-from db.db import Session, get_session
+
+from app.models.models import User
+from app.db.db import Session, get_session
 from fastapi import Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
-from datetime import timedelta
-from datetime import datetime
+from datetime import timedelta, datetime, timezone
 from sqlmodel import select
+import logging
+
+logger=logging.getLogger(__name__)
 load_dotenv()
 SECRET_KEY=os.getenv("SECRET_KEY")
 ALGORITHM=os.getenv("ALGORITHM")
@@ -22,11 +25,12 @@ def verify_password(planed_password:str,hashed_password:str) ->bool:
     return pwd_context.verify(planed_password,hashed_password)
 
 def get_password_hash(password:str)->str:
+    logger.debug(f"hashing password: {password}")
     return pwd_context.hash(password)
 
 def create_access_token(data:dict,expires_delta:Optional[timedelta]=None)->str:
     to_encode=data.copy()
-    expire=datetime.timezone.utc+(expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire=datetime.now(timezone.utc)+(expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
     to_encode.update({"exp":expire})
     return jwt.encode(to_encode,SECRET_KEY,ALGORITHM)
 
@@ -48,3 +52,4 @@ def require_admin(user:User=Depends(get_current_user)):
     if user.role != "admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN,detail="admin only")
     return user
+
