@@ -1,7 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers.auth_router import router as auth_router
-from app.db.db import  init_db
+from routers.auth_router import router as auth_router
+from routers.certificate_router import router as cert_router
+from db.db import  init_db
 import logging
 
 logging.basicConfig(
@@ -30,7 +31,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
+app.include_router(cert_router)
 app.include_router(auth_router)
 
 @app.get("/db")

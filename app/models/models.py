@@ -53,3 +53,5 @@ class EventLog(SQLModel, table=True):
     object_type: Optional[str] = None
     object_id: Optional[str] = None
     created_at: datetime = Field(default_factory=utc_now)
+
+

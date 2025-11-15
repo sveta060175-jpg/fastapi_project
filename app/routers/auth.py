@@ -4,8 +4,8 @@ from passlib.context import CryptContext
 from typing import Optional
 from jose import JWTError,jwt
 
-from app.models.models import User
-from app.db.db import Session, get_session
+from models.models import User
+from db.db import Session, get_session
 from fastapi import Depends,HTTPException,status
 from fastapi.security import OAuth2PasswordBearer
 from datetime import timedelta, datetime, timezone

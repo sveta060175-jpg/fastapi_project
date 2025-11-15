@@ -1,10 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
 
-from app.models.models import User
+from models.models import User
 from sqlmodel import Session, select
-from app.db.db import get_session
-from .auth import get_password_hash, verify_password, create_access_token
+from db.db import get_session
+from routers.auth import get_password_hash, verify_password, create_access_token
 import logging
 
 logger = logging.getLogger(__name__)

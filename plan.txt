@@ -1,3 +1,31 @@
 FastApi,SQLalchemy,SQLLITE,OpenPyxl,PythonDocx,SQLModel,Matplotlib,BCrypt,Pandas #Библиотеки
 #Таблица Справочник льгот,Льготники,Логи событий,регистрация справок по льготным категориям,пользователи.
 #Endpoint корректировка и пополнение справочника,пополнение и корректировка банка данных информацией о льготниках добавлять, просматривать и редактировать информацию,возвращать фильтрованный журнал событий по дате,возвращал Excel,отдавать WORD/Excel и уметь фильтровать по категориям,возвращает диаграммы в Excel,регистрация справок по льготникам,регистрация пользователей.
+
+
+
+git pull-Синхронизация локальной ветки с удаленной
+git add-Добавляет в гит
+git commit-Фиксирует изменения
+git fetch-Синхронизация всех веток
+git push-Пуш на сервер
+git branch-Показать все ветки
+git checkout-Смена ветки
+Создать ветку-git branch имя ветки
+git checkout -b название ветки
+git merge-Объединяет ветки
+
+
+
+alembic revision --autogenerate -m комментарий к миграции
+alembic upgrade head применить миграции
+
+
+
+pip freeze > requirements.txt зависимости из виртуалки добавить в requirements
+pip install -r requirements.txt
+pip uninstall название 
+
+
+
+uvicorn main:app --reload сервак запускает
