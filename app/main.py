@@ -6,6 +6,7 @@ from routers.certificate_router import router as cert_router
 from db.db import  init_db
 import logging
 from routers.citizen_router import router as citizen_router
+from utils.utils import read_readme
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -19,7 +20,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 app = FastAPI(debug=True, title="Система учета льготных категорий граждан",
-    description="API для учета льготных категорий граждан",
+    description=read_readme(),
     version="1.0.0",
     contact={"email": "bLb3Y@example.com"},
     license_info={"name": "MIT License"},)

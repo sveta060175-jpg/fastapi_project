@@ -1,6 +1,6 @@
 from fastapi import Request
 from starlette.middleware.base import BaseHTTPMiddleware
-from routers.logging_citizens import log_api_call
+from .logging_citizens import log_api_call
 from routers.certificate_router import logger
 from db.db import get_session
 from routers.auth import get_current_user
