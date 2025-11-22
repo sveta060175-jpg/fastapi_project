@@ -1,11 +1,11 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from datetime import date
 from models.models import User
-from sqlmodel import Session, select
+from sqlmodel import Session
 from db.db import get_session
-from routers.auth import get_password_hash, verify_password, create_access_token
-from routers.crud_certificate import *
+from routers.auth import get_current_user
+from routers.crud_certificate import create_cert,update_certificate,get_certificate
 import logging
 
 logger = logging.getLogger(__name__)
@@ -45,8 +45,8 @@ class CertificateRead(BaseModel):
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def create_certificate(data:CertificateCreate,session:Session=Depends(get_session)):
-    return create_cert(data,session)
+def create_certificate(data:CertificateCreate,session:Session=Depends(get_session),_: User=Depends(get_current_user),):
+    return create_cert(data.model_dump(),session)
 
 @router.get("/{cert_id}",response_model=CertificateRead,description="""
 # Получение льгот
@@ -69,7 +69,7 @@ def create_certificate(data:CertificateCreate,session:Session=Depends(get_sessio
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def get_cert(cert_id:int,session:Session=Depends(get_session)):
+def get_cert(cert_id:int,session:Session=Depends(get_session),_: User=Depends(get_current_user)):
     cert=get_certificate(session,cert_id)
     if not cert:
         raise HTTPException(404,"Справка не найдена")
@@ -96,8 +96,8 @@ def get_cert(cert_id:int,session:Session=Depends(get_session)):
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def update_cert(data:CertificateRead,cert_id:int,session:Session=Depends(get_session)):
-    update=update_certificate(data,cert_id,session)
+def update_cert(data:CertificateRead,cert_id:int,session:Session=Depends(get_session),_: User=Depends(get_current_user)):
+    update=update_certificate(data.model_dump(),cert_id,session)
     if not update:
         raise HTTPException(404,"Не удалось обновить справочник")
     return update

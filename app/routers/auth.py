@@ -19,7 +19,8 @@ ALGORITHM=os.getenv("ALGORITHM")
 ACCESS_TOKEN_EXPIRE_MINUTES=int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES"))
 
 pwd_context=CryptContext(schemes=["bcrypt"],deprecated="auto")
-oauth2_schem=OAuth2PasswordBearer(tokenUrl="token")
+oauth2_schem=OAuth2PasswordBearer(tokenUrl="/api/v1/auth/token")
+
 
 def verify_password(planed_password:str,hashed_password:str) ->bool:
     return pwd_context.verify(planed_password,hashed_password)
@@ -43,7 +44,7 @@ def get_current_user(token:str=Depends(oauth2_schem),session:Session=Depends(get
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user=session.exec(select(User).where(User.username==username).one_or_one())
+    user = session.exec(select(User).where(User.username == username)).one_or_none()
     if not user:
         raise credentials_exception
     return user

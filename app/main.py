@@ -1,10 +1,12 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from middleware.logging_middleware import LoggingMiddleware
 from routers.auth_router import router as auth_router
 from routers.certificate_router import router as cert_router
 from db.db import  init_db
 import logging
 from routers.citizen_router import router as citizen_router
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -22,7 +24,7 @@ app = FastAPI(debug=True, title="Система учета льготных ка
     contact={"email": "bLb3Y@example.com"},
     license_info={"name": "MIT License"},)
 
-
+app.add_middleware(LoggingMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

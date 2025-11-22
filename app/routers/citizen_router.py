@@ -1,11 +1,10 @@
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
-from datetime import date
 from models.models import User
-from sqlmodel import Session, select
+from sqlmodel import Session
 from db.db import get_session
 from routers.auth import get_current_user
-from routers.crud_citizen import create_citizen,get_citizen,update_citizen
+from routers.crud_citizen import create_cit,get_cit,update_cit
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,15 +12,16 @@ logger = logging.getLogger(__name__)
 router = APIRouter(prefix='/api/v1/citizen', tags=['citizen'])
 
 class CitizenCreate(BaseModel):
-    id: int
-    lastname: str
-    firstname: str
-class CitizenRead(BaseModel):
-    id: int
     lastname: str
     firstname: str
     middlename: str
     id_snils: str
+class CitizenRead(BaseModel):
+    lastname: str
+    firstname: str
+    middlename: str
+    id_snils: str
+
 @router.post("/create_citizen",response_model=CitizenRead,description="""
 # Создание льгот
 Этот эндпоинт позволяет создавать новые льгот в системе.
@@ -43,8 +43,9 @@ class CitizenRead(BaseModel):
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def create_citizen(data:CitizenCreate,session:Session=Depends(get_session)):
-    return create_citizen(data,session)
+def create_citizen(data:CitizenCreate,session:Session=Depends(get_session),_: User=Depends(get_current_user)):
+    data_dict = data.model_dump()
+    return create_cit(session,data_dict)
 
 @router.get("/{cert_id}",response_model=CitizenRead,description="""
 # Получение льгот
@@ -67,10 +68,10 @@ def create_citizen(data:CitizenCreate,session:Session=Depends(get_session)):
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def get_citizen(cert_id:int,session:Session=Depends(get_session),current_user: User = Depends(get_current_user)):
-    citizen=get_citizen(session,cert_id)
+def get_citizen(cert_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
+    citizen=get_cit(session,cert_id)
     if not citizen:
-        raise HTTPException(404,"Справка не найдена")
+        raise HTTPException(404,"Запрашиваемый льготник не найден")
     return citizen
 
 @router.put("/{cert_id}",response_model=CitizenRead,description="""
@@ -94,8 +95,8 @@ def get_citizen(cert_id:int,session:Session=Depends(get_session),current_user: U
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def update_citizen(data:CitizenRead,cert_id:int,session:Session=Depends(get_session),current_user: User = Depends(get_current_user)):
-    update=update_citizen(data,cert_id,session)
+def update_citizen(data:CitizenRead,cert_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
+    update=update_cit(data.model_dump(),cert_id,session)
     if not update:
         raise HTTPException(404,"Не удалось обновить справочник")
     return update

@@ -1,15 +1,21 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from pydantic import BaseModel
-
+from dotenv import load_dotenv
 from models.models import User
 from sqlmodel import Session, select
 from db.db import get_session
+import os
+from datetime import timedelta
 from routers.auth import get_password_hash, verify_password, create_access_token
 import logging
+from fastapi.security import OAuth2PasswordRequestForm
+load_dotenv()
 
 logger = logging.getLogger(__name__)
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv('ACCESS_TOKEN_EXPIRE_MINUTES',10))
 
 router = APIRouter(prefix='/api/v1/auth', tags=['auth'])
+
 
 class UserCreate(BaseModel):
     username: str
@@ -22,10 +28,8 @@ class UserResponse(BaseModel):
 class TokenResp(BaseModel):
     access_token: str
     token_type: str = 'bearer'
+    expires_in: int = ACCESS_TOKEN_EXPIRE_MINUTES
 
-class LoginRequest(BaseModel):
-    username: str
-    password: str
 
 def raise_http_exeception(status_code, detail):
     raise HTTPException(
@@ -61,34 +65,28 @@ async def register(payload: UserCreate, session: Session = Depends(get_session))
         username=payload.username,
         hashed_password=get_password_hash(payload.password)
     )
-    session.add(user)
-    session.commit()
-    session.refresh(user)
+    await session.add(user)
+    await session.commit()
+    await session.refresh(user)
     logging.info(f"User {user.username} registered")
     return UserResponse(id=user.id, username=user.username)
 
-@router.post('/login', response_model=TokenResp)
-async def login_json(
-    login_data: LoginRequest,
+@router.post("/token")
+def login_for_access_token(
+    form_data: OAuth2PasswordRequestForm = Depends(),
     session: Session = Depends(get_session)
 ):
-    user = session.exec(select(User).where(User.username == login_data.username)).first()
-    if not user:
-        raise raise_http_exeception(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
-        )
+    user = session.exec(select(User).where(User.username == form_data.username)).first()
     
-    if not verify_password(login_data.password, user.hashed_password):
-
-        raise raise_http_exeception(
+    if not user or not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect username or password"
+            detail="Incorrect username or password",
+            headers={"WWW-Authenticate": "Bearer"},
         )
-    
+    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     access_token = create_access_token(
-        data={"sub": user.username, "role": user.role}
+        data={"sub": user.username}, expires_delta=access_token_expires
     )
-    logging.info(f"User {user.username} registered")
-
-    return TokenResp(access_token=access_token, token_type="bearer")
+    
+    return TokenResp(access_token=access_token)
