@@ -4,7 +4,7 @@ from routers.auth_router import router as auth_router
 from routers.certificate_router import router as cert_router
 from db.db import  init_db
 import logging
-
+from routers.citizen_router import router as citizen_router
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -33,7 +33,7 @@ app.add_middleware(
 )
 app.include_router(cert_router)
 app.include_router(auth_router)
-
+app.include_router(citizen_router)
 @app.get("/db")
 async def init_database():
     """Инициализация БД."""    
