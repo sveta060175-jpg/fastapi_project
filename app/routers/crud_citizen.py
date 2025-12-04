@@ -3,6 +3,7 @@ from models.models import Citizen
 
 
 def create_cit(session: Session = None, data: dict = None):
+    print("Сессия и данные созданы")
     if session is None or data is None:
         raise ValueError("Сессия и данные необходимы")
     
@@ -27,3 +28,16 @@ def update_cit(session:Session,cert_id:int,data:dict):
     session.commit()
     session.refresh(citizen)
     return citizen
+
+def delete_cit(session:Session,cert_id:int):
+    citizen=session.get(Citizen,cert_id)
+    if not citizen:
+        return
+    session.delete(citizen)
+    session.commit()
+    
+    return citizen
+
+def get_all_cit(session:Session,cert_id:int):
+    session.get(Citizen)
+    return session.get(Citizen,cert_id)

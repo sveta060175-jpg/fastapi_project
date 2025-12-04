@@ -4,7 +4,7 @@ from models.models import User
 from sqlmodel import Session
 from db.db import get_session
 from routers.auth import get_current_user
-from routers.crud_citizen import create_cit,get_cit,update_cit
+from routers.crud_citizen import create_cit,get_cit,update_cit,delete_cit
 import logging
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ def create_citizen(data:CitizenCreate,session:Session=Depends(get_session),_: Us
     data_dict = data.model_dump()
     return create_cit(session,data_dict)
 
-@router.get("/{cert_id}",response_model=CitizenRead,description="""
+@router.get("/{citizen_id}",response_model=CitizenRead,description="""
 # Получение льгот
 Этот эндпоинт позволяет получать льготы которые есть в системе.
 ## Процесс получения:
@@ -68,13 +68,13 @@ def create_citizen(data:CitizenCreate,session:Session=Depends(get_session),_: Us
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def get_citizen(cert_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
-    citizen=get_cit(session,cert_id)
+def get_citizen(citizen_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
+    citizen=get_cit(session,citizen_id)
     if not citizen:
         raise HTTPException(404,"Запрашиваемый льготник не найден")
     return citizen
 
-@router.put("/{cert_id}",response_model=CitizenRead,description="""
+@router.put("/{citizen_id}",response_model=CitizenRead,description="""
 # Обновление льгот
 Этот эндпоинт позволяет обновлять льготы которые есть в системе.
 ## Процесс создания:
@@ -95,8 +95,15 @@ def get_citizen(cert_id:int,session:Session=Depends(get_session),_: User = Depen
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def update_citizen(data:CitizenRead,cert_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
-    update=update_cit(data.model_dump(),cert_id,session)
+def update_citizen(data:CitizenRead,citizen_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
+    update=update_cit(session,citizen_id,data.model_dump())
     if not update:
         raise HTTPException(404,"Не удалось обновить справочник")
     return update
+
+@router.delete("/{citizen_id}",response_model=CitizenRead,description="")
+def del_citizen(citizen_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
+    delete=delete_cit(session,citizen_id)
+    if not delete:
+        raise HTTPException(404,"Не найден гражданин для удаления")
+    return delete

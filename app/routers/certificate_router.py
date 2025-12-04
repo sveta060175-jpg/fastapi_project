@@ -16,6 +16,7 @@ class CertificateCreate(BaseModel):
     citizen_id: int
     number_certificate: str 
     issue_date: date
+    issued_by: str
     purpose: str
 class CertificateRead(BaseModel):
     id: int
@@ -46,7 +47,7 @@ class CertificateRead(BaseModel):
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
 def create_certificate(data:CertificateCreate,session:Session=Depends(get_session),_: User=Depends(get_current_user),):
-    return create_cert(data.model_dump(),session)
+    return create_cert(session,data.model_dump())
 
 @router.get("/{cert_id}",response_model=CertificateRead,description="""
 # Получение льгот
@@ -97,7 +98,7 @@ def get_cert(cert_id:int,session:Session=Depends(get_session),_: User=Depends(ge
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
 def update_cert(data:CertificateRead,cert_id:int,session:Session=Depends(get_session),_: User=Depends(get_current_user)):
-    update=update_certificate(data.model_dump(),cert_id,session)
+    update=update_certificate(session,cert_id,data.model_dump())
     if not update:
         raise HTTPException(404,"Не удалось обновить справочник")
     return update

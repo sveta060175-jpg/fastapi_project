@@ -6,6 +6,7 @@ from routers.certificate_router import router as cert_router
 from db.db import  init_db
 import logging
 from routers.citizen_router import router as citizen_router
+from routers.privilege_router import router as privilege_router
 from utils.utils import read_readme
 
 logging.basicConfig(
@@ -37,6 +38,7 @@ app.add_middleware(
 app.include_router(cert_router)
 app.include_router(auth_router)
 app.include_router(citizen_router)
+app.include_router(privilege_router)
 @app.get("/db")
 async def init_database():
     """Инициализация БД."""    
