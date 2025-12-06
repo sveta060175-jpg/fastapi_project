@@ -63,7 +63,7 @@
 - `GET /api/v1/reports/citizens/excel` - экспорт журнала в Excel
 - `GET /api/v1/reports/statistics` - статистика по льготникам
 - `GET /api/v1/reports/statistics/excel` - экспорт статистики в Excel
-- `GET /api/v1/reports/charts/distibution` - график выдачи справок по времени
+- `GET /api/v1/reports/excel/full-report` - все данные в одном отчете
 - `GET /api/v1/reports/charts/certificates-timeline` - диаграммы по категориям
 
 ## Безопасность
