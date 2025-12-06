@@ -1,5 +1,3 @@
-# Система учета льготных категорий граждан
-
 ## Описание проекта
 
 Приложение предназначено для ведения банка данных граждан из льготных категорий на предприятии 
@@ -61,9 +59,12 @@
 ### 📊 Отчеты и аналитика
 - `GET /api/v1/reports/events` - журнал событий с фильтрацией
 - `GET /api/v1/reports/events/excel` - экспорт журнала в Excel
+- `GET /api/v1/reports/privilages/excel` - экспорт журнала в Excel
+- `GET /api/v1/reports/citizens/excel` - экспорт журнала в Excel
 - `GET /api/v1/reports/statistics` - статистика по льготникам
 - `GET /api/v1/reports/statistics/excel` - экспорт статистики в Excel
-- `GET /api/v1/reports/statistics/charts` - диаграммы по категориям
+- `GET /api/v1/reports/excel/full-report` - все данные в одном отчете
+- `GET /api/v1/reports/charts/certificates-timeline` - диаграммы по категориям
 
 ## Безопасность
 

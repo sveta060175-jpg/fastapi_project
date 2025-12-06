@@ -8,7 +8,6 @@ def create_cit(session: Session = None, data: dict = None):
         raise ValueError("Сессия и данные необходимы")
     
     citizen = Citizen(**data)
-    print(citizen)
     session.add(citizen)
     session.commit()
     session.refresh(citizen)

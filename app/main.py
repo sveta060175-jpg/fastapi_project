@@ -7,6 +7,7 @@ from db.db import  init_db
 import logging
 from routers.citizen_router import router as citizen_router
 from routers.privilege_router import router as privilege_router
+from routers.excel_routers import router as excel_router
 from utils.utils import read_readme
 
 logging.basicConfig(
@@ -18,6 +19,9 @@ logging.basicConfig(
     ]
 )
 
+routers = (auth_router,cert_router,citizen_router,excel_router)
+
+
 logger = logging.getLogger(__name__)
 
 app = FastAPI(debug=True, title="Система учета льготных категорий граждан",
@@ -27,6 +31,7 @@ app = FastAPI(debug=True, title="Система учета льготных ка
     license_info={"name": "MIT License"},)
 
 app.add_middleware(LoggingMiddleware)
+list(map(app.include_router, routers))
 
 app.add_middleware(
     CORSMiddleware,
@@ -39,6 +44,8 @@ app.include_router(cert_router)
 app.include_router(auth_router)
 app.include_router(citizen_router)
 app.include_router(privilege_router)
+
+
 @app.get("/db")
 async def init_database():
     """Инициализация БД."""    

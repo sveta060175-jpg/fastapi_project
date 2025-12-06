@@ -8,6 +8,7 @@ def utc_now():
 
 
 class User(SQLModel, table=True):
+    """Пользователи."""    
     id: Optional[int] = Field(default=None, primary_key=True)
     username: str = Field(index=True, unique=True)
     fullname: Optional[str] = None
@@ -19,6 +20,7 @@ class User(SQLModel, table=True):
 
 
 class Privilege(SQLModel, table=True):
+    """Льготы."""    
     id: Optional[int] = Field(default=None, primary_key=True)
     code: str = Field(unique=True, index=True)
     name: str
@@ -27,6 +29,7 @@ class Privilege(SQLModel, table=True):
 
 
 class Citizen(SQLModel, table=True):
+    """Граждане получающие льготы."""    
     id: Optional[int] = Field(default=None, primary_key=True)
     lastname: str
     firstname: str
@@ -37,6 +40,7 @@ class Citizen(SQLModel, table=True):
 
 
 class Certificates(SQLModel, table=True):
+    """Справки выданые льготникам."""    
     id: Optional[int] = Field(default=None, primary_key=True)
     citizen_id: Optional[int] = Field(default=None, foreign_key="citizen.id")
     number_certificate: Optional[str] = None
