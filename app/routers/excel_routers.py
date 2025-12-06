@@ -13,7 +13,7 @@ import matplotlib
 matplotlib.use('Agg')  # Для работы без GUI
 
 
-router = APIRouter(prefix="/reports", tags=["reports"])
+router = APIRouter(prefix="/api/v1/reports", tags=["reports"])
 
 
 @router.get("/statistics")
