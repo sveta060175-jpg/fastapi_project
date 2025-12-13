@@ -3,11 +3,11 @@ from models.models import Citizen
 
 
 def create_cit(session: Session = None, data: dict = None):
-    print("Сессия и данные созданы")
     if session is None or data is None:
         raise ValueError("Сессия и данные необходимы")
     
     citizen = Citizen(**data)
+    
     session.add(citizen)
     session.commit()
     session.refresh(citizen)

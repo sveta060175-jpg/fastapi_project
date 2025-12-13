@@ -1,5 +1,6 @@
+from typing import Optional
 from fastapi import APIRouter, Depends, HTTPException
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from models.models import User
 from sqlmodel import Session
 from db.db import get_session
@@ -11,16 +12,19 @@ logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix='/api/v1/citizen', tags=['citizen'])
 
-class CitizenCreate(BaseModel):
-    lastname: str
-    firstname: str
-    middlename: str
-    id_snils: str
+
+    
 class CitizenRead(BaseModel):
     lastname: str
     firstname: str
     middlename: str
     id_snils: str
+class CitizenData(BaseModel):
+    lastname: str
+    firstname: str
+    middlename: str
+    id_snils: str
+    privilege_id: int
 
 @router.post("/create_citizen",response_model=CitizenRead,description="""
 # Создание льгот
@@ -43,7 +47,7 @@ class CitizenRead(BaseModel):
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def create_citizen(data:CitizenCreate,session:Session=Depends(get_session),_: User=Depends(get_current_user)):
+def create_citizen(data:CitizenData,session:Session=Depends(get_session),_: User=Depends(get_current_user)):
     data_dict = data.model_dump()
     return create_cit(session,data_dict)
 
@@ -95,7 +99,7 @@ def get_citizen(citizen_id:int,session:Session=Depends(get_session),_: User = De
 ## Ошибки:
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-def update_citizen(data:CitizenRead,citizen_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
+def update_citizen(data:CitizenData,citizen_id:int,session:Session=Depends(get_session),_: User = Depends(get_current_user)):
     update=update_cit(session,citizen_id,data.model_dump())
     if not update:
         raise HTTPException(404,"Не удалось обновить справочник")

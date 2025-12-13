@@ -9,7 +9,7 @@ from routers.citizen_router import router as citizen_router
 from routers.privilege_router import router as privilege_router
 from routers.excel_routers import router as excel_router
 from utils.utils import read_readme
-
+from routers.log_router import router as event_router
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
@@ -19,7 +19,7 @@ logging.basicConfig(
     ]
 )
 
-routers = (auth_router,cert_router,citizen_router,excel_router)
+routers = (auth_router,cert_router,citizen_router,excel_router,privilege_router,event_router)
 
 
 logger = logging.getLogger(__name__)
@@ -40,10 +40,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(cert_router)
-app.include_router(auth_router)
-app.include_router(citizen_router)
-app.include_router(privilege_router)
+
 
 
 @app.get("/db")

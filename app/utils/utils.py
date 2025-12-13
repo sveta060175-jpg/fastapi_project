@@ -3,7 +3,7 @@ import os
 def read_readme():
     """Чтение README.md файла"""
     try:
-        readme_path = "README.md"
+        readme_path = "../README.md"
         
         if os.path.exists(readme_path):
             with open(readme_path, "r", encoding="utf-8") as f:
