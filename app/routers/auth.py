@@ -37,6 +37,7 @@ def create_access_token(data:dict,expires_delta:Optional[timedelta]=None)->str:
 
 def get_current_user(token:str=Depends(oauth2_schem),session:Session=Depends(get_session))->User:
     credentials_exception=HTTPException(status_code=status.HTTP_401_UNAUTHORIZED,detail="this user is not found",headers={"WWW-Authenticate": "Bearer"})
+    
     try:
         payload=jwt.decode(token,SECRET_KEY,algorithms=[ALGORITHM])
         username=payload.get("sub")

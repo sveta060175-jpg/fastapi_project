@@ -54,7 +54,7 @@ def raise_http_exeception(status_code, detail):
 - `400 Bad Request` - пользователь уже существует
 - `500 Internal Server Error` - внутренняя ошибка сервера
 """,)
-async def register(payload: UserCreate, session: Session = Depends(get_session)):
+def register(payload: UserCreate, session: Session = Depends(get_session)):
     exists = session.exec(select(User).where(User.username == payload.username)).first()
     if exists:
         raise raise_http_exeception(
@@ -65,9 +65,10 @@ async def register(payload: UserCreate, session: Session = Depends(get_session))
         username=payload.username,
         hashed_password=get_password_hash(payload.password)
     )
-    await session.add(user)
-    await session.commit()
-    await session.refresh(user)
+    logger.info(f'USERRRRR {session}')
+    session.add(user)
+    session.commit()
+    session.refresh(user)
     logging.info(f"User {user.username} registered")
     return UserResponse(id=user.id, username=user.username)
 

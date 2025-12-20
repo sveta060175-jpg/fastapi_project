@@ -2,11 +2,20 @@ from sqlmodel import create_engine, Session, SQLModel
 import os
 import logging
 from sqlalchemy import inspect
+from dotenv import load_dotenv
+
+load_dotenv()
 
 
 logger = logging.getLogger(__name__)
-DATABASE_URL = os.getenv("DATABASE_URL", "sqlite:///./dev.db")
+POSTGRES_USER = os.getenv("POSTGRES_USER", "admin")
+POSTGRES_PASSWORD = os.getenv("POSTGRES_PASSWORD", "")
+POSTGRES_HOST = os.getenv("POSTGRES_HOST", "localhost")
+POSTGRES_PORT = os.getenv("POSTGRES_PORT", "5432")
+POSTGRES_DB = os.getenv("POSTGRES_DB", "public")
+DATABASE_URL = f"postgresql://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_HOST}:{POSTGRES_PORT}/{POSTGRES_DB}"
 engine = create_engine(DATABASE_URL, echo=True)
+
 
 def init_db():
     """Создание всех таблиц в базе данных с проверкой"""

@@ -10,6 +10,7 @@ from routers.privilege_router import router as privilege_router
 from routers.excel_routers import router as excel_router
 from utils.utils import read_readme
 from routers.log_router import router as event_router
+
 logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
